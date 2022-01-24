@@ -65,6 +65,50 @@ class ImageDataset(Dataset):
         return len(self.files_hr)
 
 
+# Dataloader for training
+class ImageDatasetStdNorm(Dataset):
+    def __init__(self, root, hr_shape):
+        hr_height, hr_width = hr_shape
+        # Transforms for low resolution images and high resolution images
+        self.lr_transform = transforms.Compose(
+            [
+                # transforms.Resize((hr_height // 4, hr_height // 4), Image.BICUBIC),
+                transforms.ToTensor(),
+                ###                transforms.Normalize(mean, std),
+            ]
+        )
+        self.hr_transform = transforms.Compose(
+            [
+                # transforms.Resize((hr_height, hr_height), Image.BICUBIC),
+                transforms.ToTensor(),
+                ###                transforms.Normalize(mean, std),
+            ]
+        )
+
+        self.files_hr = sorted(glob.glob(root + "img_hr_std_normalized/*.*"))
+        self.files_lr = sorted(glob.glob(root + "img_lr_std_normalized/*.*"))  # for training
+
+    def __getitem__(self, index):
+        ###        img_hr = Image.open(self.files_hr[index % len(self.files_hr)]).convert('L')
+        ###        img_lr = Image.open(self.files_lr[index % len(self.files_lr)]).convert('L')
+        img_hr = rasterio.open(self.files_hr[index % len(self.files_hr)])
+        img_lr = rasterio.open(self.files_lr[index % len(self.files_lr)])
+        # print(self.files_lr[index % len(self.files_lr)])
+        # print(self.files_hr[index % len(self.files_hr)])
+
+        img_hr = img_hr.read(1)
+        img_hr = np.float32(img_hr)
+        img_lr = img_lr.read(1)
+        img_lr = np.float32(img_lr)
+
+        image_lr = self.lr_transform(img_lr)
+        image_hr = self.hr_transform(img_hr)
+
+        return {"lr": image_lr, "hr": image_hr}
+
+    def __len__(self):
+        return len(self.files_hr)
+
 # Dataloader for training, it reads minmax normalized data, multiple by 255 and uint8 type so regular ToTensor() and Normalize() could be used.
 class ImageDatasetTiff(Dataset):
 
