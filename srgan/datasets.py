@@ -12,8 +12,8 @@ import torchvision.transforms as transforms
 # Normalization parameters for pre-trained PyTorch models
 #mean = np.array([0.485, 0.456, 0.406])
 #std = np.array([0.229, 0.224, 0.225])
-mean = np.array([0.5,])
-std = np.array([0.5,])
+mean = np.array([0.5])
+std = np.array([0.5])
 
 
 #Dataloader for training 
@@ -65,6 +65,57 @@ class ImageDataset(Dataset):
         return len(self.files_hr)
 
 
+# Dataloader for training, it reads minmax normalized data, multiple by 255 and uint8 type so regular ToTensor() and Normalize() could be used.
+class ImageDatasetTiff(Dataset):
+
+    def __init__(self, root, hr_shape):
+        hr_height, hr_width = hr_shape
+        # Transforms for low resolution images and high resolution images
+        self.lr_transform = transforms.Compose(
+            [
+                # transforms.Resize((hr_height // 4, hr_height // 4), Image.BICUBIC),
+                transforms.ToTensor(),
+                transforms.Normalize(mean, std),
+            ]
+        )
+        self.hr_transform = transforms.Compose(
+            [
+                # transforms.Resize((hr_height, hr_height), Image.BICUBIC),
+                transforms.ToTensor(),
+                transforms.Normalize(mean, std),
+            ]
+        )
+
+        self.files_hr = sorted(glob.glob(root + "img_hr_normalized/*.*"))
+        self.files_lr = sorted(glob.glob(root + "img_lr_normalized/*.*"))   # for training
+
+    def __getitem__(self, index):
+        ###        img_hr = Image.open(self.files_hr[index % len(self.files_hr)]).convert('L')
+        ###        img_lr = Image.open(self.files_lr[index % len(self.files_lr)]).convert('L')
+        img_hr = rasterio.open(self.files_hr[index % len(self.files_hr)])
+        img_lr = rasterio.open(self.files_lr[index % len(self.files_lr)])
+        # print(self.files_lr[index % len(self.files_lr)])
+        # print(self.files_hr[index % len(self.files_hr)])
+
+        img_hr = img_hr.read(1)
+        #print(img_hr.shape)
+        #print(img_hr)
+        img_hr_png = img_hr*255
+        #print(img_hr)
+        img_hr_png=img_hr_png.astype(np.uint8)
+        #print(img_hr)
+        img_lr = img_lr.read(1)
+        img_lr_png = img_lr*255
+        img_lr_png=img_lr_png.astype(np.uint8)
+
+        image_lr = self.lr_transform(img_lr_png)
+        image_hr = self.hr_transform(img_hr_png)
+
+        return {"lr": image_lr, "hr": image_hr}
+
+    def __len__(self):
+        return len(self.files_hr)
+
 #Dataloader for testing
 class ImageDataset_test(Dataset):
     def __init__(self, root, img_shape):
@@ -83,15 +134,16 @@ class ImageDataset_test(Dataset):
     def __getitem__(self, index):
 
         img_lr = rasterio.open(self.files_lr[index % len(self.files_lr)])
+        img_lr_name = os.path.basename(img_lr.name)
 
         img_lr = img_lr.read(1)
         img_lr=np.float32(img_lr)
 
         image_lr = self.lr_transform(img_lr)
 
-        image_lr = (image_lr+2297)/8659
+        #image_lr = (image_lr+2297)/8659
 
-        return {"lr": image_lr}
+        return {"lr": image_lr, "name": img_lr_name}
 
     def __len__(self):
         return len(self.files_lr)
