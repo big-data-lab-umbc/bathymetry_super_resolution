@@ -22,7 +22,7 @@ from torch.utils.data import DataLoader
 from torch.autograd import Variable
 
 from models import *
-from datasetsv3 import *
+from datasets import *
 
 import torch.nn as nn
 import torch.nn.functional as F
