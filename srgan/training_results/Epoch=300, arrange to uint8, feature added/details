@@ -1,0 +1,43 @@
+epoch=0
+n_epochs=300
+#dataset_name="img_hr"
+batch_size=4
+lr=0.0002
+b1=0.5
+b2=0.999
+decay_epoch=200
+n_cpu=8
+img_height = 128
+hr_height=512
+hr_width=512
+channels=1
+sample_interval=100
+checkpoint_interval=1
+
+DataLoader = ImageDatasetTiff
+
+loss_content = criterion_content(gen_hr, imgs_hr.detach()) + criterion_content(gen_features, real_features.detach())
+
+Output tifs:
+            gen_hr_single = gen_hr.cpu().detach().numpy()
+            hr_single = imgs_hr.cpu().detach().numpy()
+
+            hr_root, hr_name = os.path.split(input_path[0])
+            
+            with rasterio.Env():
+                with rasterio.open(input_path[0]) as src: 
+                    profile = src.meta
+                    print(profile)
+                    t = src.transform * src.transform.scale(1/4, 1/4)
+                
+                    profile.update(
+                        width = 128 * 4, 
+                        height = img_height * 4,
+                        dtype = rasterio.float32,
+                        transform = t 
+                    )
+                    #print(profile)
+                with rasterio.open("images/3_Jan24/TIF/gen_{}_{}.tif".format(hr_name,batches_done), 'w', **profile) as dst:
+                    dst.write(gen_hr_single[0][0], indexes = 1)
+                with rasterio.open("images/3_Jan24/TIF/hr_{}_{}.tif".format(hr_name,batches_done), 'w', **profile) as dst:
+                    dst.write(hr_single[0][0], indexes = 1)
