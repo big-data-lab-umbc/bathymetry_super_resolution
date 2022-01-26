@@ -93,6 +93,7 @@ class ImageDatasetStdNorm(Dataset):
         ###        img_lr = Image.open(self.files_lr[index % len(self.files_lr)]).convert('L')
         img_hr = rasterio.open(self.files_hr[index % len(self.files_hr)])
         img_lr = rasterio.open(self.files_lr[index % len(self.files_lr)])
+        img_lr_name = os.path.basename(img_lr.name)
         # print(self.files_lr[index % len(self.files_lr)])
         # print(self.files_hr[index % len(self.files_hr)])
 
@@ -104,14 +105,13 @@ class ImageDatasetStdNorm(Dataset):
         image_lr = self.lr_transform(img_lr)
         image_hr = self.hr_transform(img_hr)
 
-        return {"lr": image_lr, "hr": image_hr}
+        return {"lr": image_lr, "hr": image_hr, "name": img_lr_name}
 
     def __len__(self):
         return len(self.files_hr)
 
-# Dataloader for training, it reads minmax normalized data, multiple by 255 and uint8 type so regular ToTensor() and Normalize() could be used.
+# Dataloader for training
 class ImageDatasetTiff(Dataset):
-
     def __init__(self, root, hr_shape):
         hr_height, hr_width = hr_shape
         # Transforms for low resolution images and high resolution images
@@ -130,35 +130,59 @@ class ImageDatasetTiff(Dataset):
             ]
         )
 
-        self.files_hr = sorted(glob.glob(root + "img_hr_normalized/*.*"))
-        self.files_lr = sorted(glob.glob(root + "img_lr_normalized/*.*"))   # for training
+        self.files_hr = sorted(glob.glob(root + "/*.*"))
+        self.files_lr = sorted(glob.glob(root + "img_lr_std_normalized/*.*"))  # for training
 
     def __getitem__(self, index):
         ###        img_hr = Image.open(self.files_hr[index % len(self.files_hr)]).convert('L')
         ###        img_lr = Image.open(self.files_lr[index % len(self.files_lr)]).convert('L')
         img_hr = rasterio.open(self.files_hr[index % len(self.files_hr)])
         img_lr = rasterio.open(self.files_lr[index % len(self.files_lr)])
+        img_lr_name = os.path.basename(img_lr.name)
         # print(self.files_lr[index % len(self.files_lr)])
         # print(self.files_hr[index % len(self.files_hr)])
 
         img_hr = img_hr.read(1)
-        #print(img_hr.shape)
-        #print(img_hr)
-        img_hr_png = img_hr*255
-        #print(img_hr)
-        img_hr_png=img_hr_png.astype(np.uint8)
-        #print(img_hr)
         img_lr = img_lr.read(1)
-        img_lr_png = img_lr*255
-        img_lr_png=img_lr_png.astype(np.uint8)
 
-        image_lr = self.lr_transform(img_lr_png)
-        image_hr = self.hr_transform(img_hr_png)
+        image_lr = self.lr_transform(img_lr)
+        image_hr = self.hr_transform(img_hr)
 
-        return {"lr": image_lr, "hr": image_hr}
+        return {"lr": image_lr, "hr": image_hr, "name": img_lr_name}
 
     def __len__(self):
         return len(self.files_hr)
+
+# Dataloader for training, it reads minmax normalized data, multiple by 255 and uint8 type so regular ToTensor() and Normalize() could be used.
+class ImageDatasetPNGTest(Dataset):
+
+    def __init__(self, root, hr_shape):
+        hr_height, hr_width = hr_shape
+        # Transforms for low resolution images and high resolution images
+        self.lr_transform = transforms.Compose(
+            [
+                # transforms.Resize((hr_height // 4, hr_height // 4), Image.BICUBIC),
+                transforms.ToTensor(),
+                transforms.Normalize(mean, std),
+            ]
+        )
+
+        self.files_lr = sorted(glob.glob(root + "/*.*"))
+
+    def __getitem__(self, index):
+        ###        img_hr = Image.open(self.files_hr[index % len(self.files_hr)]).convert('L')
+        img_lr = Image.open(self.files_lr[index % len(self.files_lr)]).convert('L')
+        #img_lr = rasterio.open(self.files_lr[index % len(self.files_lr)])
+        # print(self.files_lr[index % len(self.files_lr)])
+        # print(self.files_hr[index % len(self.files_hr)])
+        image_lr = self.lr_transform(img_lr)
+
+        return {"lr": image_lr, "name": "test.png"}
+
+    def __len__(self):
+        return len(self.files_lr)
+        image_lr = self.lr_transform(img_lr)
+
 
 #Dataloader for testing
 class ImageDataset_test(Dataset):
