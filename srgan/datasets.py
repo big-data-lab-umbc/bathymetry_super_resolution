@@ -101,6 +101,8 @@ class ImageDataset(Dataset):
     def __len__(self):
         return len(self.files_hr)
 
+
+# Data loader for transferring TIF data to PNG format (8uint)
 class ImageDatasetTiff(Dataset):
 
     def __init__(self, root, hr_shape):
@@ -203,7 +205,7 @@ class ImageDataset_test(Dataset):
     def __len__(self):
         return len(self.files_lr)
 
-
+# Data loader for testing PNG images
 class ImageDatasetPNGTest(Dataset):
     def __init__(self, root, hr_shape):
         hr_height, hr_width = hr_shape
@@ -228,7 +230,7 @@ class ImageDatasetPNGTest(Dataset):
         return len(self.files_lr)
         image_lr = self.lr_transform(img_lr)
 
-
+# Data loader for training PNG dataset with a pre-trained model
 class ImageDatasetPrePNG(Dataset):
     def __init__(self, root, hr_shape):
         hr_height, hr_width = hr_shape
@@ -260,6 +262,7 @@ class ImageDatasetPrePNG(Dataset):
     def __len__(self):
         return len(self.files)
 
+# Data loader for training TIF dataset with a pre-trained model
 class ImageDatasetPretrainTiff(Dataset):
     def __init__(self, root, hr_shape):
         hr_height, hr_width = hr_shape
@@ -314,6 +317,53 @@ class ImageDatasetPretrainTiff(Dataset):
     def __len__(self):
         return len(self.files_hr)
 
+# Data loader for testing single TIF image with a pre-trained model
+class ImageDatasetPretrainTest(Dataset):
+    def __init__(self, root, img_shape):
+        img_height, img_width = img_shape
+        # Transforms for low resolution images and high resolution images
+        self.lr_transform = transforms.Compose(
+            [
+                transforms.ToTensor(),
+            ]
+        )
+
+        self.files_lr = sorted(glob.glob(root + "/*.*"))   
+
+    def __getitem__(self, index):
+        img_lr = rasterio.open(self.files_lr[index % len(self.files_lr)])
+
+        input_path = self.files_lr[index % len(self.files_lr)]
+
+        # Read the original tif data
+        img_lr = np.float32(img_lr.read(1))
+
+        # MinMax normalization to [0,1]; for lr data: min = -10898, max = 6151
+        min = -10898
+        max = 6151
+        img_lr = (img_lr-min)/(max-min)
+
+        # Standard normalization to [-1,1]
+        mean = 0.5
+        var = 0.5
+        img_lr = (img_lr - mean) / var
+
+        # Transfer to 3d array to apply pretrained model
+        img_lr = img_lr[:,:,np.newaxis]
+        img_lr_3d = np.concatenate((img_lr,img_lr,img_lr),axis=2)
+
+        # Transfer to Tensor data
+        image_lr = self.lr_transform(img_lr_3d)
+
+
+        return {"lr": image_lr, "input_path": input_path, "mean": mean, "var": var}
+
+    def __len__(self):
+        return len(self.files_lr)
+
+
+# Dataloader for output masks and see whether they put into the model properly
+# Not for training or testing
 class ImageDataset_mask(Dataset):
     def __init__(self, root, hr_shape):
         hr_height, hr_width = hr_shape
