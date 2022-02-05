@@ -1,4 +1,4 @@
-The file name: The number of iteration has trained on the model
+The file name: The number of iterations trained on the model
   Number of epochs: 100; 
   Number pf batches in each epoch:50
   Number of total iterations: 100*50=5000
@@ -8,5 +8,5 @@ PNG files:
   Right column: groud truth (high resolution image)
   Middle column: generated hr image
   
- TIF files:
+TIF files:
   The first image in each batch
