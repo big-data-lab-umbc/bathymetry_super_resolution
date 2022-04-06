@@ -21,8 +21,8 @@ import torch
 
 # Parameters
 exp_name = "train_on_interpolation" # Experiment name used to save loss plot
-hr_height=128 # Use smaller values like 128 if you have cuda memory issues 
-hr_width=128  # Use smaller values like 128 if you have cuda memory issues
+hr_height=512 # Use smaller values like 128 if you have cuda memory issues 
+hr_width=512  # Use smaller values like 128 if you have cuda memory issues
 epoch=0
 n_epochs=200
 batch_size=4
