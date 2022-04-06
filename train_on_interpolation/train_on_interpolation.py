@@ -1,3 +1,12 @@
+"""
+Bathymetry Super-resolution using SR-ResNet.
+The dataset can be downloaded from: https://drive.google.com/drive/folders/1Z7HR9uU2FCUijmoowKjZEoM44fbFzRhQ
+Instrustion on running the script:
+1. Download the dataset from the provided link
+2. Unzip and save the folder 'test' and 'train' under '../../data2/'
+4. Run the sript using command 'python3 srgan.py' (make sure build up the environment using 'requirements.txt' befor it)
+"""
+
 import argparse
 import os
 import numpy as np
