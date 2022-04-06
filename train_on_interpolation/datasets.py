@@ -144,9 +144,15 @@ class ImageDatasetNoScale(Dataset):
         image_hr = (img_hr_scl - mean) / var
         image_lr = (img_lr_scl - mean) / var
 
-        #Transform hr_image and lr_image to tensor
-        image_lr = self.lr_transform(image_lr)
-        image_hr = self.hr_transform(image_hr)
+        # Transfer to 3d array to apply pretrained model
+        image_hr = image_hr[:,:,np.newaxis]
+        image_hr_3d = np.concatenate((image_hr,image_hr,image_hr),axis=2)
+        image_lr = image_lr[:,:,np.newaxis]
+        image_lr_3d = np.concatenate((image_lr,image_lr,image_lr),axis=2)
+
+        # Transform hr_image and lr_image to tensor
+        image_lr = self.lr_transform(image_lr_3d)
+        image_hr = self.hr_transform(image_hr_3d)
 
         return {"lr": image_lr, "hr": image_hr, "min": min_hr, "max": max_hr, "mean": mean, "var": var, "input_path": input_path}
 
