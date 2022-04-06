@@ -1,0 +1,2 @@
+Python files: train_on_interpolation.py, models.py, datasets.py
+Training data: Please use path "../data2". Download and unzip training data and testing data on Google Drive: https://drive.google.com/drive/folders/1Z7HR9uU2FCUijmoowKjZEoM44fbFzRhQ
