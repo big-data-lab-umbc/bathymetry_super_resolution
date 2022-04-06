@@ -207,7 +207,7 @@ for epoch in range(epoch, n_epochs):
             #  (from left column to right)
             # ----------------------
 
-            imgs_lr = nn.functional.interpolate(imgs_lr, scale_factor=4)
+            # imgs_lr = nn.functional.interpolate(imgs_lr, scale_factor=4)
             gen_hr = make_grid(gen_hr, nrow=1, normalize=True)
             imgs_lr = make_grid(imgs_lr, nrow=1, normalize=True)
             imgs_hr = make_grid(imgs_hr, nrow=1,normalize=True)
