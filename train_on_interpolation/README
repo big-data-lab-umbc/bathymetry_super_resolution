@@ -1,2 +1,6 @@
-Python files: train_on_interpolation.py, models.py, datasets.py
-Training data: Please use path "../data2". Download and unzip training data and testing data on Google Drive: https://drive.google.com/drive/folders/1Z7HR9uU2FCUijmoowKjZEoM44fbFzRhQ
+Bathymetry Super-resolution of CelebA using SR-ResNet.
+The dataset can be downloaded from: https://drive.google.com/drive/folders/1Z7HR9uU2FCUijmoowKjZEoM44fbFzRhQ
+Instrustion on running the script:
+1. Download the dataset from the provided link
+2. Unzip and save the folder 'train' and 'test' under 'img_align_celeba' to '../../data2/'
+3. Run the sript using command 'python3 srgan.py'
