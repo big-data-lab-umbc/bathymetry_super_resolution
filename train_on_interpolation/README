@@ -1,8 +1,8 @@
 Bathymetry Super-resolution of CelebA using SR-ResNet
-The dataset can be downloaded from: https://drive.google.com/drive/folders/1Z7HR9uU2FCUijmoowKjZEoM44fbFzRhQ
+The training and test dataset can be downloaded from: https://drive.google.com/drive/folders/1Z7HR9uU2FCUijmoowKjZEoM44fbFzRhQ
 Instrustion on running the script:
 1. Download the dataset from the provided link
-2. Unzip and save the folder 'train' and 'test' under 'img_align_celeba' to '../../data2/'
+2. Unzip and save the folders 'train' and 'test' to '../../data2/'
 3. Run the sript using command 'python3 srgan.py'
 
 The directory of model:
