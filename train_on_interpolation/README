@@ -1,11 +1,11 @@
-Bathymetry Super-resolution of CelebA using SR-ResNet
+## Bathymetry Super-resolution of CelebA using SR-ResNet
 The training and test dataset can be downloaded from: https://drive.google.com/drive/folders/1Z7HR9uU2FCUijmoowKjZEoM44fbFzRhQ
 Instrustion on running the script:
 1. Download the dataset from the provided link
 2. Unzip and save the folders 'train' and 'test' to '../../data2/'
 3. Run the sript using command 'python3 srgan.py'
 
-The directory of model:
+## The directory of model:
 - Your local folder
   - data2
   - bathymetry_super_resolution
@@ -14,5 +14,6 @@ The directory of model:
       - Loss
       - saved_models
       - train_on_interpolation.py
+      - generator.py
       - models.py
       - datasets.py
