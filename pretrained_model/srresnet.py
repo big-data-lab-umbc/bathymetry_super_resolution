@@ -21,7 +21,7 @@ from torchvision.utils import save_image, make_grid
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
 
-from models_no_scale import *
+from models import *
 from datasets import *
 
 import torch.nn as nn
