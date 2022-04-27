@@ -159,6 +159,208 @@ class ImageDatasetNoScale(Dataset):
     def __len__(self):
         return len(self.files_hr)
 
+# Dataloader for no scale training with mask
+class NoScaleMask(Dataset):
+    def __init__(self, root, hr_shape):
+        hr_height, hr_width = hr_shape
+        self.hr_height = hr_height
+        self.hr_width = hr_width
+        # Transforms for low resolution images and high resolution images
+        self.lr_transform = transforms.Compose(
+            [
+                transforms.ToTensor(),
+            ]
+        )
+        self.hr_transform = transforms.Compose(
+            [
+                transforms.ToTensor(),
+            ]
+        )
+
+        # self.files_mask = sorted(glob.glob(root + "mask_tif/*.*"))
+        self.files_hr = sorted(glob.glob(root + "hr/*.*"))
+        self.files_lr = sorted(glob.glob(root + "lr/*.*"))  
+        self.files_mask = sorted(glob.glob(root + "mask_hr/*.*"))
+    
+    def __getitem__(self, index):
+        
+
+        img_hr = rasterio.open(self.files_hr[index % len(self.files_hr)])
+        img_lr = rasterio.open(self.files_lr[index % len(self.files_lr)])
+        mask = rasterio.open(self.files_mask[index % len(self.files_mask)])
+
+        input_path = self.files_lr[index % len(self.files_lr)]
+
+        # Read hr and lr images
+        img_hr = img_hr.read(1)
+        img_lr = img_lr.read(1)
+        img_hr = np.float32(img_hr)
+        img_lr = np.float32(img_lr)
+        # img_hr = img_hr[:self.hr_height, :self.hr_width]
+        img_hr = img_hr[:512, :512]
+        # img_lr = img_lr[:int(self.hr_height/4), :int(self.hr_width/4)]
+        img_lr = img_lr[:128, :128]
+        img_lr =  rescale(img_lr, 4, anti_aliasing=False, order=3)
+
+        # Read mask images
+        mask = mask.read(1)
+
+        # mask of ocean area
+        mask1 = np.where(mask == 1, 1, 0)
+        mask2 = np.where(mask == 0, 1, 0)
+        mask = mask1 + mask2
+        mask = mask[:512, :512]
+
+        #Create weight
+        def CreatWeight(img_hr, mask):
+            #Create an array of weight according to a mask
+            weight = (1./img_hr) * mask
+            return(np.abs(weight))
+        weight = CreatWeight(img_hr, mask)
+
+
+        # MinMax + Standard Normalization
+        # Parameters are calculated in another script
+        # Script: https://github.com/big-data-lab-umbc/bathymetry_super_resolution/blob/main/data-preprocessing/save_normalized_data.ipynb
+        max_hr = 6787
+        min_hr = -10802
+        max_lr = 6392
+        min_lr = -9820
+
+        img_hr_scl = (img_hr-min_hr)/(max_hr-min_hr)
+        img_lr_scl = (img_lr-min_lr)/(max_lr-min_lr)
+
+        mean = 0.5
+        var = 0.5
+
+        image_hr = (img_hr_scl - mean) / var
+        image_lr = (img_lr_scl - mean) / var
+
+        # Transfer to 3d array to apply pretrained model
+        image_hr = image_hr[:,:,np.newaxis]
+        image_hr_3d = np.concatenate((image_hr,image_hr,image_hr),axis=2)
+        image_lr = image_lr[:,:,np.newaxis]
+        image_lr_3d = np.concatenate((image_lr,image_lr,image_lr),axis=2)
+        mask = mask[:,:,np.newaxis]
+        mask_3d = np.concatenate((mask,mask,mask),axis=2)
+        weight = weight[:,:,np.newaxis]
+        weight_3d = np.concatenate((weight,weight,weight),axis=2)
+
+        # Transform hr_image and lr_image to tensor
+        image_lr = self.lr_transform(image_lr_3d)
+        image_hr = self.hr_transform(image_hr_3d)
+        masks = self.hr_transform(mask_3d) 
+        weights = self.hr_transform(weight_3d)
+
+        return {"lr": image_lr, "hr": image_hr, "min": min_hr, "max": max_hr, "mean": mean, "var": var, "input_path": input_path,"weight": weights, "mask_ocean": masks }
+
+    def __len__(self):
+        return len(self.files_hr)
+
+#Dataloader for no scale training with edge masks
+class NoScaleMaskEdge(Dataset):
+    def __init__(self, root, hr_shape):
+        hr_height, hr_width = hr_shape
+        self.hr_height = hr_height
+        self.hr_width = hr_width
+        # Transforms for low resolution images and high resolution images
+        self.lr_transform = transforms.Compose(
+            [
+                transforms.ToTensor(),
+            ]
+        )
+        self.hr_transform = transforms.Compose(
+            [
+                transforms.ToTensor(),
+            ]
+        )
+
+        # self.files_mask = sorted(glob.glob(root + "mask_tif/*.*"))
+        self.files_hr = sorted(glob.glob(root + "hr/*.*"))
+        self.files_lr = sorted(glob.glob(root + "lr/*.*"))  
+        self.files_mask = sorted(glob.glob(root + "mask_hr/*.*"))
+    
+    def __getitem__(self, index):
+        
+
+        img_hr = rasterio.open(self.files_hr[index % len(self.files_hr)])
+        img_lr = rasterio.open(self.files_lr[index % len(self.files_lr)])
+        mask = rasterio.open(self.files_mask[index % len(self.files_mask)])
+
+        input_path = self.files_lr[index % len(self.files_lr)]
+
+        # Read hr and lr images
+        img_hr = img_hr.read(1)
+        img_lr = img_lr.read(1)
+        img_hr = np.float32(img_hr)
+        img_lr = np.float32(img_lr)
+        # img_hr = img_hr[:self.hr_height, :self.hr_width]
+        img_hr = img_hr[:512, :512]
+        # img_lr = img_lr[:int(self.hr_height/4), :int(self.hr_width/4)]
+        img_lr = img_lr[:128, :128]
+        img_lr =  rescale(img_lr, 4, anti_aliasing=False, order=3)
+
+        # Read mask images
+        mask = mask.read(1)
+
+        # mask of ocean area
+        mask1 = np.where(mask == 1, 1, 0)
+        mask2 = np.where(mask == 0, 1, 0)
+        mask_ocean = mask1 + mask2
+        mask_ocean = mask_ocean[:512, :512]
+
+        # mask of edge area
+        mask_edge = mask2
+
+        #Create weight
+        def CreatWeight(img_hr, mask):
+            #Create an array of weight according to a mask
+            weight = (1./img_hr) * mask
+            return(np.abs(weight))
+        weight = CreatWeight(img_hr, mask_ocean)
+
+
+        # MinMax + Standard Normalization
+        # Parameters are calculated in another script
+        # Script: https://github.com/big-data-lab-umbc/bathymetry_super_resolution/blob/main/data-preprocessing/save_normalized_data.ipynb
+        max_hr = 6787
+        min_hr = -10802
+        max_lr = 6392
+        min_lr = -9820
+
+        img_hr_scl = (img_hr-min_hr)/(max_hr-min_hr)
+        img_lr_scl = (img_lr-min_lr)/(max_lr-min_lr)
+
+        mean = 0.5
+        var = 0.5
+
+        image_hr = (img_hr_scl - mean) / var
+        image_lr = (img_lr_scl - mean) / var
+
+        # Transfer to 3d array to apply pretrained model
+        image_hr = image_hr[:,:,np.newaxis]
+        image_hr_3d = np.concatenate((image_hr,image_hr,image_hr),axis=2)
+        image_lr = image_lr[:,:,np.newaxis]
+        image_lr_3d = np.concatenate((image_lr,image_lr,image_lr),axis=2)
+        mask_ocean = mask_ocean[:,:,np.newaxis]
+        mask_ocean_3d = np.concatenate((mask_ocean,mask_ocean,mask_ocean),axis=2)
+        mask_edge = mask_edge[:,:,np.newaxis]
+        mask_edge_3d = np.concatenate((mask_edge, mask_edge, mask_edge),axis=2)
+        weight = weight[:,:,np.newaxis]
+        weight_3d = np.concatenate((weight,weight,weight),axis=2)
+
+        # Transform hr_image and lr_image to tensor
+        image_lr = self.lr_transform(image_lr_3d)
+        image_hr = self.hr_transform(image_hr_3d)
+        masks_ocean = self.hr_transform(mask_ocean_3d) 
+        masks_edge = self.hr_transform(mask_edge_3d)
+        weights = self.hr_transform(weight_3d)
+
+        return {"lr": image_lr, "hr": image_hr, "min": min_hr, "max": max_hr, "mean": mean, "var": var, "input_path": input_path,"weight": weights, "mask_ocean": masks_ocean, "mask_edge": masks_edge}
+
+    def __len__(self):
+        return len(self.files_hr)
+
 
 
 # Data loader for transferring TIF data to PNG format (8uint)
