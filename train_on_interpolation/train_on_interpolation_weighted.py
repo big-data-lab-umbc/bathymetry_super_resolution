@@ -25,7 +25,7 @@ hr_height=512 # Use smaller values like 128 if you have cuda memory issues
 hr_width=512  # Use smaller values like 128 if you have cuda memory issues
 img_height = 128
 
-epoch=0     # Set 0 if no pretrained model used
+epoch=1     # Set 0 if no pretrained model used
 n_epochs=200
 batch_size=4
 lr=0.0002
