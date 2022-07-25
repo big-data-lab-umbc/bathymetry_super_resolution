@@ -2,22 +2,19 @@
 
 ## Table of contents
 
-- Overview
-- Table of contents
-- Architecture
-- Downloading Datasets
-- Training and Testing
-  - Installation
-  - Training
-    - Pretraining
-    - Bathymetry training
-  - Testing
-    - Generate results using saved models
-  - Evaluation
-- Our Results
-- Credit
+- [Table of contents](https://github.com/big-data-lab-umbc/bathymetry_super_resolution/blob/main/README.md#table-of-contents)
+- [Architecture](https://github.com/big-data-lab-umbc/bathymetry_super_resolution/blob/main/README.md#architecture)
+- [Downloading Datasets](https://github.com/big-data-lab-umbc/bathymetry_super_resolution/blob/main/README.md#downloading-datasets)
+- [Training and Testing](https://github.com/big-data-lab-umbc/bathymetry_super_resolution/blob/main/README.md#training-and-testing)
+  - [Installation](https://github.com/big-data-lab-umbc/bathymetry_super_resolution/blob/main/README.md#installation)
+  - [Training](https://github.com/big-data-lab-umbc/bathymetry_super_resolution/blob/main/README.md#training)
+    - [Pretraining](https://github.com/big-data-lab-umbc/bathymetry_super_resolution/blob/main/README.md#pre-training)
+    - [Bathymetry training](https://github.com/big-data-lab-umbc/bathymetry_super_resolution/blob/main/README.md#bathymetry-training)
+  - [Testing](https://github.com/big-data-lab-umbc/bathymetry_super_resolution/blob/main/README.md#testing)
+- [Our Results](https://github.com/big-data-lab-umbc/bathymetry_super_resolution/blob/main/README.md#results)
+- [Credit](https://github.com/big-data-lab-umbc/bathymetry_super_resolution/blob/main/README.md#credit)
   - [Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network](https://arxiv.org/pdf/1609.04802v5.pdf)
-  - [PyTorch-GAN Github Repository](https://github.com/eriklindernoren/PyTorch-GAN)
+  - [PyTorch-GAN Github Repository](
 
 
 
