@@ -1,7 +1,6 @@
 import glob
 import random
 import os
-from cv2 import normalize
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import MinMaxScaler
