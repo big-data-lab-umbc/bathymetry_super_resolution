@@ -1,6 +1,6 @@
 # Pre-training
 ## Downloading Datasets
-The dataset can be downloaded from: https://drive.google.com/file/d/0B7EVK8r0v71pZjFTYXZWM3FlRnM/view?usp=sharing&resourcekey=0-dYn9z10tMJOBAkviAcfdyQ
+Download Celeb-A datasets for Pre-training. The dataset is public and can be downloaded at the [official website](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html). Unzip the folder as 'img_align_celeba' at the data folder.
 
 Instrustion on running the script:
 1. Download the dataset from the provided link
