@@ -19,3 +19,10 @@ Instrustion on running the script:
       - models.py
       - datasets.py
 Please create folders for saving generated images and saving trained models.
+
+## Models and corresponding loss functions:
+  - Model 1: content loss
+  - Model 2: content loss + water loss
+  - Model 3: water loss
+  - Model 4: water loss + coastal loss
+  - Model 5: coastal loss
