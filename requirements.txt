@@ -6,3 +6,4 @@ scipy
 pillow
 urllib3
 scikit-image
+rasterio
