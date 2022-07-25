@@ -65,8 +65,6 @@ $ sudo pip3 install -r requirements.txt
   - Model 3: water loss
   - Model 4: water loss + coastal loss
   - Model 5: coastal loss
-  - Model 6: content loss + water loss + coastal loss
-  - Model 7: content loss + coastal loss
 
   Please refer to README in [Bathymetry training folder](https://github.com/big-data-lab-umbc/bathymetry_super_resolution/tree/main/bathymetry_training) for training steps.
 
