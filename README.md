@@ -14,7 +14,7 @@
 - [Our Results](https://github.com/big-data-lab-umbc/bathymetry_super_resolution/blob/main/README.md#results)
 - [Credit](https://github.com/big-data-lab-umbc/bathymetry_super_resolution/blob/main/README.md#credit)
   - [Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network](https://arxiv.org/pdf/1609.04802v5.pdf)
-  - [PyTorch-GAN Github Repository](
+  - [PyTorch-GAN Github Repository](https://github.com/eriklindernoren/PyTorch-GAN)
 
 
 
