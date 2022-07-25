@@ -1,6 +1,7 @@
 # Pre-training
 ## Downloading Datasets
 The dataset can be downloaded from: https://drive.google.com/file/d/0B7EVK8r0v71pZjFTYXZWM3FlRnM/view?usp=sharing&resourcekey=0-dYn9z10tMJOBAkviAcfdyQ
+
 Instrustion on running the script:
 1. Download the dataset from the provided link
 2. Save the folder 'img_align_celeba' to '../../data/'
