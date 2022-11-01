@@ -32,11 +32,11 @@ The bathymetry super resolution model is based on a pre-trained SR-ResNet model 
 
 - ##### Download training set for bathymetry training:
 
-  The images for training set of our work are manually cropped from ETOPO-1 and GEBCO grid datasets. - Permission required for public -
+  The images for training set of our work are manually cropped from ETOPO-1 and GEBCO grid datasets. Please download and unzip in 'data/train': https://drive.google.com/file/d/1ZwW2sGMgVgya-vDHF5xViM2pa0ziapUF/view?usp=share_link.
 
 - ##### Download test set for testing:
 
-  The images for test set of our work are manually cropped from ETOPO-1 and GEBCO grid datasets. - Permission required for public -
+  The images for test set of our work are manually cropped from ETOPO-1 and GEBCO grid datasets. Please download and unzip in 'data/test': https://drive.google.com/file/d/16IoRbHVasGl07ZRrQIq11l6eop7N_a3d/view?usp=share_link 
 
 ## Training and Testing
 
