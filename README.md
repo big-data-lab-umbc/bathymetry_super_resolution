@@ -1,5 +1,7 @@
 # Bathymetry Super Resolution
 
+<a href="https://zenodo.org/badge/latestdoi/429226154"><img src="https://zenodo.org/badge/429226154.svg" alt="DOI"></a>
+
 ## Table of contents
 
 - [Table of contents](https://github.com/big-data-lab-umbc/bathymetry_super_resolution/blob/main/README.md#table-of-contents)
